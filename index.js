@@ -2,6 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cons = require('consolidate');
 const puppeteer = require('puppeteer');
+const fs = require('fs');
 const host = process.env.HOST || '0.0.0.0';
 const port = process.env.PORT || 3000;
 
@@ -47,14 +48,18 @@ app.post('/saludo',(req,res) => {
         })
         getData(enlaces);
     })();
+    const data=[];
     function getData(enlaces){
-        enlaces.forEach(e=>{
-            console.log(e);
-        })
+        const jsonData = JSON.stringify(enlaces);
+        fs.writeFileSync('data.json',jsonData,'utf-8');
     }
     res.send("Su informacion esta siendo procesada:"+nombre);
     console.log(typeof(nombre));
     console.log(nombre);
+})
+
+app.get('/data',(req,res)=>{
+    res.send(fs.readFileSync('data.json'));
 })
 //Leer localhost de variables y puerto
  app.listen(port,host,()=>{
